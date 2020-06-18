@@ -14,7 +14,11 @@ class PermissionsRq(val context: Context) {
         return this
     }
 
-    fun notificationPermisson(): PermissionsRq {
+    fun notificationPermission(): PermissionsRq {
+        return this
+    }
+
+    fun floatingWindowPermission(): PermissionsRq {
         return this
     }
 
