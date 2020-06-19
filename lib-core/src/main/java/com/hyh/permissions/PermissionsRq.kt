@@ -10,17 +10,10 @@ import android.content.Context
  */
 class PermissionsRq(val context: Context) {
 
-    fun permissions(vararg permissions: String): PermissionsRq {
+    //var mOnRationale: ((Int) -> Unit)? = null
+
+    /*fun onRationale(onRationale: (permission: Int) -> Unit): PermissionsRq {
+        this.mOnRationale = onRationale
         return this
-    }
-
-    fun notificationPermission(): PermissionsRq {
-        return this
-    }
-
-    fun floatingWindowPermission(): PermissionsRq {
-        return this
-    }
-
-
+    }*/
 }

@@ -1,19 +1,17 @@
 package com.hyh.permissions.ui
 
-import android.app.Activity
-import android.os.Bundle
+import android.app.Fragment
+import android.content.Intent
 
 /**
  * @description
  *
  * @author Administrator
- * @data  2020/6/17
+ * @data  2020/6/19
  */
-class KtPermissionsAct : Activity() {
+class KtPermissionsFragment : Fragment() {
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
+
 
     override fun onRequestPermissionsResult(
         requestCode: Int,
@@ -21,5 +19,9 @@ class KtPermissionsAct : Activity() {
         grantResults: IntArray
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
     }
 }
