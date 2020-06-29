@@ -10,18 +10,19 @@ import android.app.Activity
  */
 abstract class ActivityBridge : ComponentBridge {
 
-
-
-
-
     override fun showRequestExplainDialog() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
     override fun showRationaleExplainDialog() {
+    }
+
+    override fun requestPermissions(
+        permissions: List<String>,
+        onResult: (permissions: List<String>, grantResults: List<String>) -> Unit
+    ) {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
-    abstract fun getActivity(): Activity
+    abstract fun getActivity(): Activity?
 
 }

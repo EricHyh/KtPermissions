@@ -11,8 +11,6 @@ import android.content.Intent
  */
 class KtPermissionsFragment : Fragment() {
 
-
-
     override fun onRequestPermissionsResult(
         requestCode: Int,
         permissions: Array<out String>,

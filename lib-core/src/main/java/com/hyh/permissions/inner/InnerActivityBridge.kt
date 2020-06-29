@@ -1,5 +1,6 @@
 package com.hyh.permissions.inner
 
+import android.app.Activity
 import android.content.Context
 import com.hyh.permissions.ui.KtPermissionsActivity
 import java.lang.ref.WeakReference
@@ -10,12 +11,16 @@ import java.lang.ref.WeakReference
  * @author Administrator
  * @data  2020/6/19
  */
-class InnerActivityBridge(val context: Context) : ComponentBridge {
+class InnerActivityBridge(val context: Context) : ActivityBridge() {
 
     private var mActivityRef: WeakReference<KtPermissionsActivity>? = null
 
     fun bindActivty(activity: KtPermissionsActivity) {
         this.mActivityRef = WeakReference(activity)
+    }
+
+    override fun getActivity(): Activity? {
+        return mActivityRef?.get()
     }
 
     override fun showRequestExplainDialog() {
