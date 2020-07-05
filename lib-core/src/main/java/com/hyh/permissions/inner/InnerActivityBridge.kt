@@ -2,6 +2,7 @@ package com.hyh.permissions.inner
 
 import android.app.Activity
 import android.content.Context
+import com.hyh.permissions.ui.IExplainDialog
 import com.hyh.permissions.ui.KtPermissionsActivity
 import java.lang.ref.WeakReference
 
@@ -23,7 +24,7 @@ class InnerActivityBridge(val context: Context) : ActivityBridge() {
         return mActivityRef?.get()
     }
 
-    override fun showRequestExplainDialog() {
+    override fun showRequestExplainDialog(result: (permissions: List<String>) -> Unit) {
 
     }
 
@@ -34,7 +35,7 @@ class InnerActivityBridge(val context: Context) : ActivityBridge() {
 
     }
 
-    override fun showRationaleExplainDialog() {
+    override fun showRationaleExplainDialog(result: (permissions: List<String>) -> Unit) {
 
     }
 

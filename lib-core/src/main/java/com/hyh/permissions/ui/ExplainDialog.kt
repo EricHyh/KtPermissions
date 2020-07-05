@@ -8,15 +8,10 @@ package com.hyh.permissions.ui
  */
 class ExplainDialog : IExplainDialog {
 
-    private var agree: () -> Unit = {}
-    private var cancel: () -> Unit = {}
+    private var result: (permissions: List<String>) -> Unit = {}
 
-    override fun agreeListener(agree: () -> Unit) {
-        this.agree = agree
-    }
-
-    override fun cancelListener(cancel: () -> Unit) {
-        this.cancel = cancel
+    override fun resultListener(result: (permissions: List<String>) -> Unit) {
+        this.result = result
     }
 
     override fun show() {

@@ -23,7 +23,7 @@ class OuterActivityBridge(activity: Activity) : ComponentBridge {
 
     override fun requestPermissions(
         permissions: List<String>,
-        onResult: (permissions: List<String>, grantResults: List<String>) -> Unit
+        onResult: (permissions: List<String>, grantPermissions: List<String>) -> Unit
     ) {
 
     }
