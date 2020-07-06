@@ -16,27 +16,20 @@ class InnerActivityBridge(val context: Context) : ActivityBridge() {
 
     private var mActivityRef: WeakReference<KtPermissionsActivity>? = null
 
+    override fun getRationaleExplainDialogDialog(): IExplainDialog {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun getRequestExplainDialogDialog(): IExplainDialog {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
     fun bindActivty(activity: KtPermissionsActivity) {
         this.mActivityRef = WeakReference(activity)
     }
 
     override fun getActivity(): Activity? {
         return mActivityRef?.get()
-    }
-
-    override fun showRequestExplainDialog(result: (permissions: List<String>) -> Unit) {
-
-    }
-
-    override fun requestPermissions(
-        permissions: List<String>,
-        onResult: (permissions: List<String>, grantResults: List<String>) -> Unit
-    ) {
-
-    }
-
-    override fun showRationaleExplainDialog(result: (permissions: List<String>) -> Unit) {
-
     }
 
     override fun destroy() {

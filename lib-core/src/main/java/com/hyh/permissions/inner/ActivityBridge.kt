@@ -1,13 +1,15 @@
 package com.hyh.permissions.inner
 
+import android.annotation.SuppressLint
+import android.annotation.TargetApi
+import android.app.Activity
+import android.app.Fragment
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentActivity
 import com.hyh.permissions.ui.IExplainDialog
 
 /**
@@ -18,19 +20,19 @@ import com.hyh.permissions.ui.IExplainDialog
  */
 abstract class ActivityBridge : ComponentBridge {
 
-    override fun showRequestExplainDialog(result: (permissions: List<String>) -> Unit) {
+    final override fun showRequestExplainDialog(result: (permissions: List<String>) -> Unit) {
         val dialog = getRequestExplainDialogDialog()
         dialog.resultListener(result)
         dialog.show()
     }
 
-    override fun showRationaleExplainDialog(result: (permissions: List<String>) -> Unit) {
+    final override fun showRationaleExplainDialog(result: (permissions: List<String>) -> Unit) {
         val dialog = getRationaleExplainDialogDialog()
         dialog.resultListener(result)
         dialog.show()
     }
 
-    override fun requestPermissions(
+    final override fun requestPermissions(
         permissions: List<String>,
         onResult: (permissions: List<String>, grantPermissions: List<String>) -> Unit
     ) {
@@ -40,9 +42,9 @@ abstract class ActivityBridge : ComponentBridge {
                 onResult(permissions, ArrayList())
             } else {
                 activity
-                    .supportFragmentManager
+                    .fragmentManager
                     .beginTransaction()
-                    .add(Fragment(), null)
+                    .add(PermissionFragment(permissions, onResult), null)
                     .commitAllowingStateLoss()
             }
         } else {
@@ -54,8 +56,10 @@ abstract class ActivityBridge : ComponentBridge {
 
     abstract fun getRationaleExplainDialogDialog(): IExplainDialog
 
-    abstract fun getActivity(): FragmentActivity?
+    abstract fun getActivity(): Activity?
 
+    @SuppressLint("ValidFragment")
+    @TargetApi(Build.VERSION_CODES.M)
     private class PermissionFragment(
         val permissions: List<String>,
         val onResult: (permissions: List<String>, grantPermissions: List<String>) -> Unit
@@ -87,6 +91,7 @@ abstract class ActivityBridge : ComponentBridge {
                 }
             }
             onResult(this.permissions, grantPermissions)
+            fragmentManager.beginTransaction().remove(this).commitAllowingStateLoss()
         }
     }
 }
