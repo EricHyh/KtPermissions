@@ -7,6 +7,7 @@ import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Binder
 import android.os.Build
+import android.os.PowerManager
 import android.provider.Settings
 
 /**
@@ -31,6 +32,7 @@ class KtPermissions {
                 PERMISSION_NOTIFICATION -> isNotificationGranted(context)
                 PERMISSION_FLOATING_WINDOW -> isFloatingWindowGranted(context)
                 Manifest.permission.REQUEST_INSTALL_PACKAGES -> isInstallGranted(context)
+                Manifest.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS -> isIgnoreBatteryOptimizationsGranted(context)
                 else -> {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                         context.checkSelfPermission(permission) == PackageManager.PERMISSION_GRANTED
@@ -134,6 +136,19 @@ class KtPermissions {
         fun isInstallGranted(context: Context): Boolean {
             if (Build.VERSION.SDK_INT >= 26) {
                 return context.packageManager.canRequestPackageInstalls()
+            }
+            return true
+        }
+
+        fun isIgnoreBatteryOptimizationsGranted(context: Context): Boolean {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                try {
+                    val powerManager =
+                        context.getSystemService(Context.POWER_SERVICE) as PowerManager
+                    return powerManager.isIgnoringBatteryOptimizations(context.packageName)
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
             }
             return true
         }
