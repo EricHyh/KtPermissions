@@ -8,14 +8,14 @@ package com.hyh.permissions.inner
  */
 interface ComponentBridge {
 
-    fun showRequestExplainDialog(result: (permissions: List<String>) -> Unit)
+    fun showRequestExplainDialog(onResult: (permissions: List<String>) -> Unit)
 
     fun requestPermissions(
         permissions: List<String>,
         onResult: (permissions: List<String>, grantPermissions: List<String>) -> Unit
     )
 
-    fun showRationaleExplainDialog(result: (permissions: List<String>) -> Unit)
+    fun showRationaleExplainDialog(onResult: (permissions: List<String>) -> Unit)
 
     fun destroy()
 

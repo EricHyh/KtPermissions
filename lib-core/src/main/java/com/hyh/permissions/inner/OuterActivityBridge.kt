@@ -22,11 +22,11 @@ class OuterActivityBridge(activity: Activity) : ActivityBridge() {
         return mActivityRef?.get()
     }
 
-    override fun getRationaleExplainDialogDialog(): IExplainDialog {
+    override fun getRationaleExplainDialogDialog(onResult: (dialog: IExplainDialog) -> Unit) {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
-    override fun getRequestExplainDialogDialog(): IExplainDialog {
+    override fun getRequestExplainDialogDialog(onResult: (dialog: IExplainDialog) -> Unit) {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 

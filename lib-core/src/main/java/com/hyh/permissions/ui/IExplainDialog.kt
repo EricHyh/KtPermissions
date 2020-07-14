@@ -8,7 +8,7 @@ package com.hyh.permissions.ui
  */
 interface IExplainDialog {
 
-    fun resultListener(result: (permissions: List<String>) -> Unit)
+    fun resultListener(onResult: (permissions: List<String>) -> Unit)
 
     fun show()
 
