@@ -10,6 +10,6 @@ import android.app.Activity
  */
 interface IExplainDialogFactory {
 
-    fun create(activity: Activity): IExplainDialog
+    fun create(activity: Activity, permissions: List<String>, onResult: (permissions: List<String>) -> Unit): IExplainDialog
 
 }

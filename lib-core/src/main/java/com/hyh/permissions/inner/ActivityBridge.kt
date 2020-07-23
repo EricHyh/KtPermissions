@@ -20,18 +20,28 @@ import com.hyh.permissions.ui.IExplainDialog
  */
 abstract class ActivityBridge : ComponentBridge {
 
-    final override fun showRequestExplainDialog(onResult: (permissions: List<String>) -> Unit) {
-        getRequestExplainDialogDialog(onResult = {
-            it.resultListener(onResult)
-            it.show()
-        })
+    final override fun showRequestExplainDialog(
+        permissions: List<String>,
+        onResult: (permissions: List<String>) -> Unit
+    ) {
+        getRequestExplainDialog(
+            permissions,
+            onResult,
+            dialogResult = {
+                it.show()
+            })
     }
 
-    final override fun showRationaleExplainDialog(onResult: (permissions: List<String>) -> Unit) {
-        getRationaleExplainDialogDialog (onResult = {
-            it.resultListener(onResult)
-            it.show()
-        })
+    final override fun showRationaleExplainDialog(
+        permissions: List<String>,
+        onResult: (permissions: List<String>) -> Unit
+    ) {
+        getRationaleExplainDialog(
+            permissions,
+            onResult,
+            dialogResult = {
+                it.show()
+            })
     }
 
     final override fun requestPermissions(
@@ -54,9 +64,17 @@ abstract class ActivityBridge : ComponentBridge {
         }
     }
 
-    abstract fun getRequestExplainDialogDialog(onResult: (dialog: IExplainDialog) -> Unit)
+    abstract fun getRequestExplainDialog(
+        permissions: List<String>,
+        permissionsResult: (permissions: List<String>) -> Unit,
+        dialogResult: (dialog: IExplainDialog) -> Unit
+    )
 
-    abstract fun getRationaleExplainDialogDialog(onResult: (dialog: IExplainDialog) -> Unit)
+    abstract fun getRationaleExplainDialog(
+        permissions: List<String>,
+        permissionsResult: (permissions: List<String>) -> Unit,
+        dialogResult: (dialog: IExplainDialog) -> Unit
+    )
 
     abstract fun getActivity(): Activity?
 

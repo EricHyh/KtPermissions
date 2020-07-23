@@ -1,7 +1,9 @@
 package com.hyh.permissions.inner
 
 import android.app.Activity
+import android.app.Application
 import android.content.Context
+import android.os.Bundle
 import com.hyh.permissions.ui.IExplainDialog
 import com.hyh.permissions.ui.KtPermissionsActivity
 import java.lang.ref.WeakReference
@@ -14,17 +16,30 @@ import java.lang.ref.WeakReference
  */
 class InnerActivityBridge(val context: Context) : ActivityBridge() {
 
-    private var mActivityRef: WeakReference<KtPermissionsActivity>? = null
+    private var mActivityRef: WeakReference<Activity>? = null
 
-    override fun getRationaleExplainDialogDialog(onResult: (dialog: IExplainDialog) -> Unit) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    init {
+        val application: Application = context.applicationContext as Application
+        application.registerActivityLifecycleCallbacks(KtPermissionsActivityLifeListener())
     }
 
-    override fun getRequestExplainDialogDialog(onResult: (dialog: IExplainDialog) -> Unit) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    override fun getRationaleExplainDialog(
+        permissions: List<String>,
+        permissionsResult: (permissions: List<String>) -> Unit,
+        dialogResult: (dialog: IExplainDialog) -> Unit
+    ) {
+
     }
 
-    fun bindActivty(activity: KtPermissionsActivity) {
+    override fun getRequestExplainDialog(
+        permissions: List<String>,
+        permissionsResult: (permissions: List<String>) -> Unit,
+        dialogResult: (dialog: IExplainDialog) -> Unit
+    ) {
+
+    }
+
+    fun bindActivty(activity: Activity) {
         this.mActivityRef = WeakReference(activity)
     }
 
@@ -36,5 +51,32 @@ class InnerActivityBridge(val context: Context) : ActivityBridge() {
         mActivityRef?.get()?.finish()
         mActivityRef?.clear()
         mActivityRef = null
+    }
+
+    class KtPermissionsActivityLifeListener : Application.ActivityLifecycleCallbacks {
+
+        override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {
+            if (activity is KtPermissionsActivity) {
+
+            }
+        }
+
+        override fun onActivityStarted(activity: Activity) {
+        }
+
+        override fun onActivityResumed(activity: Activity) {
+        }
+
+        override fun onActivityPaused(activity: Activity) {
+        }
+
+        override fun onActivityStopped(activity: Activity) {
+        }
+
+        override fun onActivitySaveInstanceState(activity: Activity, outState: Bundle) {
+        }
+
+        override fun onActivityDestroyed(activity: Activity) {
+        }
     }
 }
