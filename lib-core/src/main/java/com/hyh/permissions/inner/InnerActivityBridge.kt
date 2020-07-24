@@ -4,7 +4,9 @@ import android.app.Activity
 import android.app.Application
 import android.content.Context
 import android.os.Bundle
+import com.hyh.permissions.ui.EmptyDialog
 import com.hyh.permissions.ui.IExplainDialog
+import com.hyh.permissions.ui.IExplainDialogFactory
 import com.hyh.permissions.ui.KtPermissionsActivity
 import java.lang.ref.WeakReference
 
@@ -14,21 +16,22 @@ import java.lang.ref.WeakReference
  * @author Administrator
  * @data  2020/6/19
  */
-class InnerActivityBridge(val context: Context) : ActivityBridge() {
+class InnerActivityBridge(
+    private val context: Context,
+    private val requestExplainDialogFactory: IExplainDialogFactory?,
+    private val rationaleExplainDialogFactory: IExplainDialogFactory?
+) : ActivityBridge() {
 
-    private var mActivityRef: WeakReference<Activity>? = null
+    private val application: Application = context.applicationContext as Application
+    private val activityLifeListener = KtPermissionsActivityLifeListener()
+
+
+    private var activityRef: WeakReference<Activity>? = null
+
+    private var lazyDialogResult: ((activity: Activity) -> Unit)? = null
 
     init {
-        val application: Application = context.applicationContext as Application
-        application.registerActivityLifecycleCallbacks(KtPermissionsActivityLifeListener())
-    }
-
-    override fun getRationaleExplainDialog(
-        permissions: List<String>,
-        permissionsResult: (permissions: List<String>) -> Unit,
-        dialogResult: (dialog: IExplainDialog) -> Unit
-    ) {
-
+        application.registerActivityLifecycleCallbacks(activityLifeListener)
     }
 
     override fun getRequestExplainDialog(
@@ -36,28 +39,68 @@ class InnerActivityBridge(val context: Context) : ActivityBridge() {
         permissionsResult: (permissions: List<String>) -> Unit,
         dialogResult: (dialog: IExplainDialog) -> Unit
     ) {
-
+        if (requestExplainDialogFactory == null) {
+            dialogResult(EmptyDialog(permissions, permissionsResult))
+        } else {
+            val activity = activityRef?.get()
+            if (activity == null) {
+                KtPermissionsActivity.start(this.context)
+                lazyDialogResult = {
+                    lazyDialogResult = null
+                    dialogResult(requestExplainDialogFactory.create(it, permissions, permissionsResult))
+                }
+            } else {
+                dialogResult(requestExplainDialogFactory.create(activity, permissions, permissionsResult))
+            }
+        }
     }
 
-    fun bindActivty(activity: Activity) {
-        this.mActivityRef = WeakReference(activity)
+    override fun getRationaleExplainDialog(
+        permissions: List<String>,
+        permissionsResult: (permissions: List<String>) -> Unit,
+        dialogResult: (dialog: IExplainDialog) -> Unit
+    ) {
+        if (rationaleExplainDialogFactory == null) {
+            dialogResult(EmptyDialog(permissions, permissionsResult))
+        } else {
+            val activity = activityRef?.get()
+            if (activity == null) {
+                KtPermissionsActivity.start(this.context)
+                lazyDialogResult = {
+                    lazyDialogResult = null
+                    dialogResult(rationaleExplainDialogFactory.create(it, permissions, permissionsResult))
+                }
+            } else {
+                dialogResult(rationaleExplainDialogFactory.create(activity, permissions, permissionsResult))
+            }
+        }
+    }
+
+    private fun onActivityCreated(activity: Activity) {
+        activityRef = WeakReference(activity)
+        lazyDialogResult?.invoke(activity)
+    }
+
+    private fun onActivityDestroyed() {
+        activityRef = null
     }
 
     override fun getActivity(): Activity? {
-        return mActivityRef?.get()
+        return activityRef?.get()
     }
 
     override fun destroy() {
-        mActivityRef?.get()?.finish()
-        mActivityRef?.clear()
-        mActivityRef = null
+        activityRef?.get()?.finish()
+        activityRef?.clear()
+        activityRef = null
+        application.unregisterActivityLifecycleCallbacks(activityLifeListener)
     }
 
-    class KtPermissionsActivityLifeListener : Application.ActivityLifecycleCallbacks {
+    inner class KtPermissionsActivityLifeListener : Application.ActivityLifecycleCallbacks {
 
         override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {
             if (activity is KtPermissionsActivity) {
-
+                this@InnerActivityBridge.onActivityCreated(activity)
             }
         }
 
@@ -77,6 +120,9 @@ class InnerActivityBridge(val context: Context) : ActivityBridge() {
         }
 
         override fun onActivityDestroyed(activity: Activity) {
+            if (activity is KtPermissionsActivity) {
+                this@InnerActivityBridge.onActivityDestroyed()
+            }
         }
     }
 }

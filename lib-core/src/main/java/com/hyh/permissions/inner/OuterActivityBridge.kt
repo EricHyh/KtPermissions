@@ -14,22 +14,15 @@ import java.lang.ref.WeakReference
  */
 class OuterActivityBridge(
     activity: Activity,
-    requestExplainDialogFactory: IExplainDialogFactory?,
-    rationaleExplainDialogFactory: IExplainDialogFactory?
+    private val requestExplainDialogFactory: IExplainDialogFactory?,
+    private val rationaleExplainDialogFactory: IExplainDialogFactory?
 ) : ActivityBridge() {
 
-    private var mActivityRef: WeakReference<Activity>? = null
-    private var requestExplainDialogFactory: IExplainDialogFactory? = null
-    private var rationaleExplainDialogFactory: IExplainDialogFactory? = null
+    private val activityRef: WeakReference<Activity> = WeakReference(activity)
 
-    init {
-        this.mActivityRef = WeakReference(activity)
-        this.requestExplainDialogFactory = requestExplainDialogFactory
-        this.rationaleExplainDialogFactory = rationaleExplainDialogFactory
-    }
 
     override fun getActivity(): Activity? {
-        return mActivityRef?.get()
+        return activityRef.get()
     }
 
     override fun getRequestExplainDialog(
@@ -42,7 +35,7 @@ class OuterActivityBridge(
             dialogResult(EmptyDialog(permissions, permissionsResult))
             return
         }
-        dialogResult(requestExplainDialogFactory!!.create(activity, permissions, permissionsResult))
+        dialogResult(requestExplainDialogFactory.create(activity, permissions, permissionsResult))
     }
 
     override fun getRationaleExplainDialog(
@@ -51,15 +44,14 @@ class OuterActivityBridge(
         dialogResult: (dialog: IExplainDialog) -> Unit
     ) {
         val activity: Activity? = getActivity()
-        if (activity == null || requestExplainDialogFactory == null) {
+        if (activity == null || rationaleExplainDialogFactory == null) {
             dialogResult(EmptyDialog(permissions, permissionsResult))
             return
         }
-        dialogResult(rationaleExplainDialogFactory!!.create(activity, permissions, permissionsResult))
+        dialogResult(rationaleExplainDialogFactory.create(activity, permissions, permissionsResult))
     }
 
     override fun destroy() {
-        mActivityRef?.clear()
-        mActivityRef = null
+        activityRef.clear()
     }
 }
